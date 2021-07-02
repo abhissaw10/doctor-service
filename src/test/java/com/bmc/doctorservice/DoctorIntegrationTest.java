@@ -2,12 +2,15 @@ package com.bmc.doctorservice;
 
 import com.bmc.doctorservice.model.Doctor;
 import com.bmc.doctorservice.repository.DoctorRepository;
+import com.bmc.doctorservice.repository.S3Repository;
 import com.bmc.doctorservice.service.DoctorService;
 import com.bmc.doctorservice.service.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,9 +26,13 @@ public class DoctorIntegrationTest {
     @Autowired
     NotificationService notificationService;
 
+    @Autowired
+    S3Repository s3Repository;
+
     @BeforeEach
     public void setup(){
-        doctorService = new DoctorService(doctorRepository,notificationService);
+
+        doctorService = new DoctorService(doctorRepository,notificationService,s3Repository);
     }
 
     @Test
@@ -35,8 +42,9 @@ public class DoctorIntegrationTest {
             .hasSize(1)
             .isEqualTo(List.of(Doctor
                 .builder()
-                .doctorName("Abhishek")
-                .dob("26-09-1983")
+                .firstName("Abhishek")
+                .lastName("Sawhney")
+                .dob(LocalDate.of(1983,9,26).toString())
                 .id("1")
                 .status("Pending")
                 .build()));
@@ -54,8 +62,8 @@ public class DoctorIntegrationTest {
     private Doctor givenDoctor(){
         return Doctor
             .builder()
-            .doctorName("Abhishek")
-            .dob("26-09-1983")
+            .firstName("Abhishek")
+            .dob(LocalDate.of(1983,9,26).toString())
             .build();
     }
 }

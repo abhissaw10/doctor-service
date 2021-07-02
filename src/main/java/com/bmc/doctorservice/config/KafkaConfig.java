@@ -13,6 +13,10 @@ import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,12 +26,6 @@ public class KafkaConfig {
 
     @Value(value = "${kafka.bootstrap.address}")
     private String bootStrapAddress;
-
-    @Value("${doctor.registration.kafka.partitions}")
-    private Integer partitions;
-
-    @Value("${doctor.registration.kafka.replications}")
-    private Short replication;
 
 
     @Bean
@@ -49,5 +47,14 @@ public class KafkaConfig {
     @Bean
     public KafkaTemplate<String, Doctor> kafkaTemplate(){
         return new KafkaTemplate<String, Doctor>(producerFactory());
+    }
+
+    @Bean
+    public Docket api() {
+        return new Docket(DocumentationType.SWAGGER_2)
+            .select()
+            .apis(RequestHandlerSelectors.any())
+            .paths(PathSelectors.any())
+            .build();
     }
 }

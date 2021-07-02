@@ -2,6 +2,7 @@ package com.bmc.doctorservice;
 
 import com.bmc.doctorservice.model.Doctor;
 import com.bmc.doctorservice.repository.DoctorRepository;
+import com.bmc.doctorservice.repository.S3Repository;
 import com.bmc.doctorservice.service.DoctorService;
 import com.bmc.doctorservice.service.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,20 +30,23 @@ public class DoctorServiceTest {
     @Mock
     NotificationService notificationService;
 
+    @Mock
+    S3Repository s3Repository;
+
     private DoctorService doctorService;
 
     @BeforeEach
     void setup(){
-        doctorService = new DoctorService(doctorRepository,notificationService);
+        doctorService = new DoctorService(doctorRepository,notificationService,s3Repository);
     }
 
     @Test
     public void registerDoctor() throws Exception{
         when(doctorRepository.save(any())).thenReturn(Doctor
             .builder()
-            .doctorName("Abhishek")
+            .firstName("Abhishek")
             .id("1")
-            .dob("26-09-1983")
+            .dob(LocalDate.of(1983,9,26).toString())
             .status("Pending")
             .build());
         Doctor doctor = doctorService.register(givenDoctor());
@@ -50,8 +55,8 @@ public class DoctorServiceTest {
             .isEqualTo(Doctor
                 .builder()
                 .id("1")
-                .doctorName("Abhishek")
-                .dob("26-09-1983")
+                .firstName("Abhishek")
+                .dob(LocalDate.of(1983,9,26).toString())
                 .status("Pending")
                 .build());
         verify(doctorRepository).save(any());
@@ -67,8 +72,8 @@ public class DoctorServiceTest {
     private Doctor givenDoctor(){
         return  Doctor
             .builder()
-            .doctorName("Abhishek")
-            .dob("26-09-1983")
+            .firstName("Abhishek")
+            .dob(LocalDate.of(1983,9,26).toString())
             .build();
     }
 }

@@ -11,6 +11,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDate;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -37,21 +39,21 @@ public class DoctorControllerTest {
             when(doctorService.register(any())).thenReturn(Doctor
                 .builder()
                 .id("1")
-                .doctorName("Abhishek")
-                .dob("26-09-1983")
+                .firstName("Abhishek")
+                .dob(LocalDate.of(1983,9,26).toString())
                 .status("Pending")
                 .build());
 
             mockMvc.perform(post("/doctors")
                 .contentType("application/json")
                 .content("{\n" +
-                    "  \"doctorName\": \"Abhishek\",\n" +
+                    "  \"firstName\": \"Abhishek\",\n" +
                     "  \"dob\": \"26-09-1983\"\n" +
                     "}"))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\n" +
                     "  \"id\": \"1\",\n" +
-                    "  \"doctorName\": \"Abhishek\",\n" +
+                    "  \"firstName\": \"Abhishek\",\n" +
                     "  \"dob\": \"26-09-1983\",\n" +
                     "  \"status\": \"Pending\"\n" +
                     "}"));
@@ -67,14 +69,14 @@ public class DoctorControllerTest {
             when(doctorService.getDoctor(any())).thenReturn(Doctor
                 .builder()
                 .id("1")
-                .doctorName("Abhishek")
-                .dob("26-09-1983")
+                .firstName("Abhishek")
+                .dob(LocalDate.of(1983,9,26).toString())
                 .status("Pending")
                 .build());
             mockMvc.perform(get("/doctors/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\n" +
-                    "  \"doctorName\": \"Abhishek\",\n" +
+                    "  \"firstName\": \"Abhishek\",\n" +
                     "  \"dob\": \"26-09-1983\"\n" +
                     "}",false));
         }
