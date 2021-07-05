@@ -38,5 +38,6 @@ public class Doctor {
     private String approverComments;
     private String registrationDate;
     private String verificationDate;
+    private Double rating;
 
 }

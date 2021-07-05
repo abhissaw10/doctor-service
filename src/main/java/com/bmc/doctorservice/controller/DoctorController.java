@@ -45,13 +45,6 @@ public class DoctorController {
         return ResponseEntity.ok("Success");
     }
 
-   /* @GetMapping("/files/{filename:.+}")
-    public ResponseEntity<Resource> getFile(@PathVariable String filename) {
-        Resource file = service.downloadDocument(filename);
-        return ResponseEntity.ok()
-            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
-    }*/
-
     @PutMapping("/doctors/{id}/approve")
     public ResponseEntity<Doctor> approveDoctor(@PathVariable String id, @RequestBody UpdateDoctorRequest request){
         return ResponseEntity.ok(service.approve(id,request));
