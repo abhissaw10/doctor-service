@@ -22,6 +22,6 @@ public class UpdateDoctorRating {
         Doctor doctor = doctorRepository.findById(avgRating.getDoctorId()).get();
         doctor.setRating(avgRating.getAvgRating());
         doctorRepository.save(doctor);
-        System.out.println("Received Message in prescription group: " + message.getPayload());
+        System.out.println("Received Message in rating group: " + message.getPayload());
     }
 }

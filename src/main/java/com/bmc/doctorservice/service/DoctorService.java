@@ -10,10 +10,13 @@ import com.bmc.doctorservice.repository.S3Repository;
 import com.bmc.doctorservice.util.ValidationUtils;
 import lombok.extern.log4j.Log4j2;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.Cacheable;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
@@ -109,4 +112,7 @@ public class DoctorService {
         notificationService.notifyDoctorRegistration(doctor);
     }
 
+    public ByteArrayOutputStream downloadDocuments(String doctorId) throws IOException {
+        return s3Repository.downloadFileFromS3(doctorId);
+    }
 }
