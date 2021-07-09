@@ -1,6 +1,6 @@
 package com.bmc.doctorservice.filter;
 
-import com.bmc.ratingservice.model.UserPrincipal;
+import com.bmc.doctorservice.model.UserPrincipal;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;

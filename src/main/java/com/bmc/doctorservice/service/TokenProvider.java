@@ -20,10 +20,6 @@ public class TokenProvider {
 
     private final String JWT_SECRET ="some_secret_code";
 
-    private final int JWT_EXPIRATION_TIME_IN_MS = 300000;
-
-    
-
     public boolean validateToken(String jwt) {
         try {
              Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(jwt);

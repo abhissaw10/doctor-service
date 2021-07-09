@@ -39,9 +39,9 @@ public class DoctorService {
         this.s3Repository = s3Repository;
     }
 
-    public void uploadDocuments(MultipartFile file) {
+    public void uploadDocuments(String doctorId, MultipartFile file) {
         try {
-            s3Repository.uploadFileToS3(file);
+            s3Repository.uploadFileToS3(doctorId,file);
         } catch (Exception e) {
             throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
         }
@@ -61,7 +61,9 @@ public class DoctorService {
     }
 
     public Doctor getDoctor(String id) {
-            return Optional.ofNullable(doctorRepository.findById(id)).get().orElseThrow(RequestedResourceUnAvailableException::new);
+            return Optional
+                .ofNullable(doctorRepository.findById(id)).get()
+                .orElseThrow(RequestedResourceUnAvailableException::new);
     }
 
     private Doctor updateStatus(String id, String status, UpdateDoctorRequest request) {
@@ -112,7 +114,11 @@ public class DoctorService {
         notificationService.notifyDoctorRegistration(doctor);
     }
 
-    public ByteArrayOutputStream downloadDocuments(String doctorId) throws IOException {
-        return s3Repository.downloadFileFromS3(doctorId);
+    public ByteArrayOutputStream downloadDocuments(String id, String documentId) throws IOException {
+        return s3Repository.downloadFileFromS3(id,documentId);
+    }
+
+    public List<String> downloadDocumentMetadata(String doctorId) {
+        return s3Repository.getDocumentsMetadata(doctorId);
     }
 }

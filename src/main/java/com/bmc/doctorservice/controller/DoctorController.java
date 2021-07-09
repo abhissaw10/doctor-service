@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,25 +42,33 @@ public class DoctorController {
     public ResponseEntity<Doctor> registerDoctor(@RequestBody Doctor doctor) throws InvalidInputException {
         return ResponseEntity.ok(service.register(doctor));
     }
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/doctors/{id}/documents")
-    public ResponseEntity<String> uploadDocuments(@RequestParam("files") MultipartFile[] files) throws IOException {
-        Arrays.asList(files).stream().forEach(file -> {
-            service.uploadDocuments(file);
-            //fileNames.add(file.getOriginalFilename());
-        });
+    public ResponseEntity<String> uploadDocuments(@RequestParam("files") MultipartFile[] files, @PathVariable("id") String doctorId) throws IOException {
+       int index=0;
+        for(MultipartFile file: files){
+            String name = file.getName();
+            service.uploadDocuments(doctorId,file);
+        }
         return ResponseEntity.ok("Success");
     }
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    @GetMapping("/doctors/{doctorId}/documents")
-    public ResponseEntity<byte[]> downloadDocuments(@PathVariable String doctorId) throws IOException {
+    @GetMapping("/doctors/{doctorId}/documents/{documentId}")
+    public ResponseEntity<byte[]> downloadDocuments(@PathVariable String doctorId, @PathVariable("documentId") String documentId) throws IOException {
         String contentType = "application/octet-stream";
-        ByteArrayOutputStream downloadStream = service.downloadDocuments(doctorId);
+        ByteArrayOutputStream downloadStream = service.downloadDocuments(doctorId,documentId);
         return ResponseEntity.ok()
             .contentType(MediaType.parseMediaType(contentType))
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + doctorId + "\"")
             .body(downloadStream.toByteArray());
     }
+
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    @GetMapping("/doctors/{doctorId}/documents/metadata")
+    public ResponseEntity<List<String>> downloadDocumentMetadata(@PathVariable String doctorId) throws IOException {
+        return ResponseEntity.ok(service.downloadDocumentMetadata(doctorId));
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/doctors/{id}/approve")
     public ResponseEntity<Doctor> approveDoctor(@PathVariable String id, @RequestBody UpdateDoctorRequest request){
