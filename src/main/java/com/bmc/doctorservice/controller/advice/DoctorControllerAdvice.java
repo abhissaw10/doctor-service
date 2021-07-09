@@ -21,7 +21,7 @@ public class DoctorControllerAdvice {
             .errorCode(INVALID_INPUT_ERROR_CODE)
             .errorMessage(INVALID_INPUT_ERROR_MSG)
             .errorFields(e.getAttributeNames())
-            .build(), HttpStatus.BAD_GATEWAY);
+            .build(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(RequestedResourceUnAvailableException.class)
