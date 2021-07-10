@@ -34,8 +34,8 @@ public class S3Repository {
     @PostConstruct
     public void init() {
         AWSCredentials credentials = new BasicAWSCredentials(
-            "############",
-            "#############"
+            "#########",
+            "##############"
         );
         s3Client = AmazonS3ClientBuilder
             .standard()

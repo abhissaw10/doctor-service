@@ -9,8 +9,6 @@ import com.bmc.doctorservice.repository.DoctorRepository;
 import com.bmc.doctorservice.repository.S3Repository;
 import com.bmc.doctorservice.util.ValidationUtils;
 import lombok.extern.log4j.Log4j2;
-import org.apache.kafka.common.errors.ResourceNotFoundException;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.Cacheable;
@@ -21,9 +19,9 @@ import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static com.bmc.doctorservice.JavaUtils.randomLong;
 import static com.bmc.doctorservice.model.DoctorStatus.*;
 
 @Log4j2
@@ -49,7 +47,7 @@ public class DoctorService {
 
     public Doctor register(Doctor doctor) throws InvalidInputException {
         ValidationUtils.validate(doctor);
-        doctor.setId(randomLong());
+        doctor.setId(UUID.randomUUID().toString());
         doctor.setStatus(PENDING.value);
         if(doctor.getSpeciality()==null){
             doctor.setSpeciality(Speciality.GENERAL_PHYSICIAN.name());
@@ -103,6 +101,12 @@ public class DoctorService {
             .sorted(new Comparator<Doctor>() {
                 @Override
                 public int compare(Doctor o1, Doctor o2) {
+                    if(o1.getRating() == null){
+                        o1.setRating(0.0);
+                    }
+                    if(o2.getRating() == null){
+                        o2.setRating(0.0);
+                    }
                     return o1.getRating().compareTo(o2.getRating());
                 }
             })

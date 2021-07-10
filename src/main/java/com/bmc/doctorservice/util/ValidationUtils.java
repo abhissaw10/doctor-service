@@ -4,6 +4,9 @@ import com.bmc.doctorservice.exception.InvalidInputException;
 import com.bmc.doctorservice.model.Doctor;
 import org.springframework.stereotype.Component;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +24,9 @@ public class ValidationUtils {
         if(doctor.getLastName() == null || !doctor.getLastName().matches("^[a-zA-Z\\\\s]{1,10}$")){
             errorFields.add("Last Name");
         }
+        if(doctor.getDob() ==null || !isValid(doctor.getDob())){
+            errorFields.add("Date Of Birth");
+        }
         if(doctor.getPan() == null || !doctor.getPan().matches("[A-Z]{5}[0-9]{4}[A-Z]{1}")){
             errorFields.add("PAN");
         }
@@ -28,5 +34,15 @@ public class ValidationUtils {
             errorFields.add("Email Id");
         }
         if(errorFields.size()>0) throw new InvalidInputException(errorFields);
+    }
+    public static boolean isValid(String dateStr) {
+        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setLenient(false);
+        try {
+            sdf.parse(dateStr);
+        } catch (ParseException e) {
+            return false;
+        }
+        return true;
     }
 }

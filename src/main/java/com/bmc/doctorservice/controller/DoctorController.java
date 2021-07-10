@@ -37,12 +37,12 @@ public class DoctorController {
     public ResponseEntity<List<Doctor>> getAllDoctors(@RequestParam(value = "status",required = true) String status, @RequestParam(value = "speciality", required = false) String speciality){
         return ResponseEntity.ok(service.getAllDoctorsWithFilters(status,speciality));
     }
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @PostMapping("/doctors")
     public ResponseEntity<Doctor> registerDoctor(@RequestBody Doctor doctor) throws InvalidInputException {
         return ResponseEntity.ok(service.register(doctor));
     }
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @PostMapping("/doctors/{id}/documents")
     public ResponseEntity<String> uploadDocuments(@RequestParam("files") MultipartFile[] files, @PathVariable("id") String doctorId) throws IOException {
        int index=0;
@@ -50,7 +50,7 @@ public class DoctorController {
             String name = file.getName();
             service.uploadDocuments(doctorId,file);
         }
-        return ResponseEntity.ok("Success");
+        return ResponseEntity.ok("File(s) uploaded Successfully");
     }
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @GetMapping("/doctors/{doctorId}/documents/{documentId}")
